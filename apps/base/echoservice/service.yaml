@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: echoservice
+  namespace: default
+  labels:
+    app: echoservice
+    version: "v1"
+spec:
+  selector:
+    app: echoservice
+  ports:
+    - name: http-80
+      port: 8080
+      protocol: TCP
+      targetPort: 8080

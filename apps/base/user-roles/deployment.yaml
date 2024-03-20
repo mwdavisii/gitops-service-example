@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: user-roles
+  namespace: user-mgmt
+  labels:
+    app: user-roles
+    version: "v1"
+    backstage.io/kubernetes-id: user-roles
+spec:
+  selector:
+    matchLabels:
+      app: user-roles
+  template:
+    metadata:
+      labels:
+        app: user-roles
+        version: "v1"
+        backstage.io/kubernetes-id: user-roles
+    spec:
+      serviceAccountName: user-roles-service-account
+      containers:
+      - image: 927876825924.dkr.ecr.us-west-2.amazonaws.com/user-roles:production_latest
+        imagePullPolicy: Always
+        name: user-roles
+        ports:
+        - containerPort: 5001
+        livenessProbe:
+          initialDelaySeconds: 30
+          periodSeconds: 30
+          timeoutSeconds: 15
+          successThreshold: 1
+          failureThreshold: 3
+          httpGet:
+            scheme: HTTP
+            path: /user-mgmt/v1/users/roles/health-check
+            port: 5001

@@ -1,0 +1,15 @@
+apiVersion: kustomize.toolkit.fluxcd.io/v1beta2
+kind: Kustomization
+metadata:
+  name: aws-load-balancer-controller-install
+  namespace: flux-system
+spec:
+  interval: 1m0s
+  dependsOn:
+  - name: sources
+  - name: namespaces
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  path: ./infrastructure/kustomized/overlays/production/aws-load-balancer-controller/install
+  prune: true 

@@ -1,0 +1,14 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+patchesStrategicMerge:
+- envVariables.yaml
+- resourceLimits.yaml
+- scalingMetrics.yaml
+- hpa.yaml
+resources:
+- ../../../base/user-roles
+- policy.yaml
+images:
+- name: 927876825924.dkr.ecr.us-west-2.amazonaws.com/user-roles
+  newName: 927876825924.dkr.ecr.us-west-2.amazonaws.com/user-roles # {"$imagepolicy": "flux-system:user-roles:name"}
+  newTag: production-v1.1.3 # {"$imagepolicy": "flux-system:user-roles:tag"}

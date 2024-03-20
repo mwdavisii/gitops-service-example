@@ -1,0 +1,17 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: echoservice
+  labels:
+    app: echoservice
+    version: "v1"
+spec:
+  template:
+    spec:
+      containers:
+      - name: echoservice
+        env:
+        - name: LOG_LEVEL
+          value: "DEBUG"
+        - name: ENVIRONMENT
+          value: "development"

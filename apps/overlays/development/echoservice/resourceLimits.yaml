@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: echoservice
+  labels:
+    app: echoservice
+    version: "v1"
+spec:
+  template:
+    spec:
+      containers:
+      - name: echoservice
+        image: k8s.gcr.io/e2e-test-images/echoserver:2.5
+        resources:
+          limits:
+            memory: 32Mi
+            cpu: ".10"
+          requests:
+            memory: 32Mi
+            cpu: ".05"
+        env:
+        - name: MEM_TOTAL_MB
+          valueFrom:
+            resourceFieldRef:
+              resource: limits.memory

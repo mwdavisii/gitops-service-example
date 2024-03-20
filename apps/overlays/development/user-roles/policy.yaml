@@ -1,0 +1,18 @@
+---
+apiVersion: image.toolkit.fluxcd.io/v1beta1
+kind: ImagePolicy
+metadata:
+  name: user-roles
+  namespace: user-mgmt
+  labels:
+    backstage.io/kubernetes-id: user-roles
+spec:
+  imageRepositoryRef:
+    name: user-roles
+  filterTags:
+    pattern: '^(v[0-9.]+)([a-fA-F0-9]+).(?P<ts>.*)(Z)'
+    extract: '$ts'
+  policy:
+    numerical:
+      order: asc
+

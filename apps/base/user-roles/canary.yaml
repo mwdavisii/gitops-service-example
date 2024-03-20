@@ -1,0 +1,52 @@
+apiVersion: flagger.app/v1beta1
+kind: Canary
+metadata:
+  name: user-roles
+  namespace: user-mgmt
+  labels:
+    backstage.io/kubernetes-id: user-roles
+spec:
+  # deployment reference
+  targetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: user-roles
+  progressDeadlineSeconds: 120
+  autoscalerRef:
+    apiVersion: autoscaling/v2beta2
+    kind: HorizontalPodAutoscaler
+    name: user-roles
+  service:
+    port: 8080
+    portName: http
+    appProtocol: http
+    targetPort: 5001
+  metricsServer: http://kube-prometheus-stack-prometheus.istio-system.svc.cluster.local:9090
+  skipAnalysis: false
+  analysis:
+    interval: 30s
+    threshold: 10
+    maxWeight: 100
+    stepWeight: 20
+    metrics:
+    - name: request-success-rate
+      thresholdRange:
+        min: 99
+      interval: 2m
+    - name: request-duration
+      thresholdRange:
+        max: 8000
+      interval: 2m
+    webhooks:
+      - name: acceptance-test
+        type: pre-rollout
+        url: http://flagger-loadtester.flagger-system.svc.cluster.local/
+        timeout: 30s
+        metadata:
+          type: bash
+          cmd: "curl -s http://user-roles-canary.user-mgmt:8080/user-mgmt/v1/users/roles/health-check"
+      - name: load-test
+        url: http://flagger-loadtester.flagger-system.svc.cluster.local/
+        timeout: 30s
+        metadata:
+          cmd: "hey -z 30s -q 2 -c 5 http://user-roles-canary.user-mgmt:8080/user-mgmt/v1/users/roles/health-check"

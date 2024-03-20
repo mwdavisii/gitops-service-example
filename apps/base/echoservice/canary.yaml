@@ -1,0 +1,79 @@
+apiVersion: flagger.app/v1beta1
+kind: Canary
+metadata:
+  name: echoservice
+  namespace: default
+spec:
+  # deployment reference
+  targetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: echoservice
+  # the maximum time in seconds for the canary deployment
+  # to make progress before it is rollback (default 600s)
+  progressDeadlineSeconds: 600
+  # HPA reference (optional)
+  autoscalerRef:
+    apiVersion: autoscaling/v2beta2
+    kind: HorizontalPodAutoscaler
+    name: echoservice
+  service:
+    # service port number
+    port: 8080
+    # container port number or name (optional)
+    targetPort: 8080
+    # Istio gateways (optional)
+    # gateways:
+    # - istio-ingressgateway.istio-system.svc.cluster.local
+    # # Istio virtual service host names (optional)
+    # hosts:
+    # - apis.dev.oemaligner.com
+    # # Istio traffic policy (optional)
+    # # trafficPolicy:
+    # #   tls:
+    # #     # use ISTIO_MUTUAL when mTLS is enabled
+    # #     mode: DISABLE
+    # Istio retry policy (optional)
+    # retries:
+    #   attempts: 3
+    #   perTryTimeout: 1s
+    #   retryOn: "gateway-error,connect-failure,refused-stream"
+  metricsServer: http://kube-prometheus-stack-prometheus.istio-system.svc.cluster.local:9090
+  skipAnalysis: false
+  analysis:
+    # schedule interval (default 60s)
+    interval: 30s
+    # max number of failed metric checks before rollback
+    threshold: 10
+    # max traffic percentage routed to canary
+    # percentage (0-100)
+    maxWeight: 100
+    # canary increment step
+    # percentage (0-100)
+    stepWeight: 10
+    metrics:
+    - name: request-success-rate
+      # minimum req success rate (non 5xx responses)
+      # percentage (0-100)
+      thresholdRange:
+        min: 99
+      interval: 2m
+    - name: request-duration
+      # maximum req duration P99
+      # milliseconds
+      thresholdRange:
+        max: 500
+      interval: 2m
+    webhooks:
+      - name: acceptance-test
+        type: pre-rollout
+        url: http://flagger-loadtester.flagger-system.svc.cluster.local/
+        timeout: 30s
+        metadata:
+          type: bash
+          cmd: "curl -s http://echoservice-canary.default:8080/"
+      - name: load-test
+        url: http://flagger-loadtester.flagger-system.svc.cluster.local/
+        timeout: 30s
+        metadata:
+          cmd: "hey -z 30s -q 2 -c 5 http://echoservice-canary.default:8080/"

@@ -1,0 +1,14 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+- ../../../../base/aws-load-balancer-controller/install
+
+patches:
+  - target:
+      kind: HelmRelease
+      name: aws-load-balancer-controller
+    patch: |-
+      - op: replace
+        path: /spec/values/clusterName
+        value: dev-eks

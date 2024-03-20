@@ -1,0 +1,32 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: flagger
+  namespace: flux-system
+spec:
+  interval: 1h
+  releaseName: flagger
+  install: # override existing Flagger CRDs
+    crds: CreateReplace
+  upgrade: # update Flagger CRDs
+    crds: CreateReplace
+  chart:
+    spec:
+      chart: flagger
+      version: 1.34.0
+      interval: 6h # scan for new versions every six hours
+      sourceRef:
+        kind: HelmRepository
+        name: flagger
+  values:
+    nodeSelector:
+      kubernetes.io/os: linux
+    metricsServer: http://kube-prometheus-stack-prometheus.istio-system.svc.cluster.local:9090
+  valuesFrom:
+    - kind: Secret
+      name: flagger-secrets
+      valuesKey: msteams.webhook
+      targetPath: msteams.url
+      optional: false
+  targetNamespace: flagger-system

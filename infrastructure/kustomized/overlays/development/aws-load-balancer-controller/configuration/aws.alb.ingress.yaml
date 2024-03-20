@@ -1,0 +1,20 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: eks-core-ingress
+  namespace: istio-ingress
+  annotations:
+    alb.ingress.kubernetes.io/subnets: subnet-05d1665c4d0614b35, subnet-01b652b3daf5b8712
+    alb.ingress.kubernetes.io/certificate-arn: "arn:aws:acm:us-west-2:<accountid>:certificate/fede76e4-742a-43f0-be97-8a0e2030cf05"
+    alb.ingress.kubernetes.io/wafv2-acl-arn: arn:aws:wafv2:us-west-2:<accountid>:regional/webacl/dev_oemaligner_com/d176da30-cb6c-472e-8aec-a28b9b8d2d63
+spec:
+  rules:
+    - http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: istio-ingressgateway
+                port:
+                  number: 443

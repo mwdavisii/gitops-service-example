@@ -1,0 +1,14 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+patchesStrategicMerge:
+- envVariables.yaml
+- resourceLimits.yaml
+- scalingMetrics.yaml
+- hpa.yaml
+resources:
+- ../../../base/user-roles
+- policy.yaml
+images:
+- name: <container url>
+  newName: <container url> 
+  newTag: v1.1.8.8bb76aa1fdcad2d608d761a04002db3d6a888df1.20240223_165525Z 

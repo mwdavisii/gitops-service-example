@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: user-roles
+  namespace: user-mgmt
+  labels:
+    app: user-roles
+    version: "v1"
+spec:
+  template:
+    spec:
+      containers:
+      - name: user-roles
+        resources:
+          limits:
+            memory: 256Mi
+            cpu: 250m
+          requests:
+            memory: 128Mi
+            cpu: 5m
+        env:
+        - name: MEM_TOTAL_MB
+          valueFrom:
+            resourceFieldRef:
+              resource: limits.memory

@@ -1,0 +1,13 @@
+---
+apiVersion: image.toolkit.fluxcd.io/v1beta2
+kind: ImageRepository
+metadata:
+  name: user-roles
+  namespace: user-mgmt
+  labels:
+    backstage.io/kubernetes-id: user-roles
+spec:
+  image: 927876825924.dkr.ecr.us-west-2.amazonaws.com/user-roles
+  interval: 1m0s
+  provider: aws
+

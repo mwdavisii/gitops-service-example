@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: flagger-system
+  labels:
+    name: istio-system
+    opa-istio-injection: enabled
+    istio-injection: enabled
