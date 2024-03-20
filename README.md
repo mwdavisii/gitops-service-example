@@ -7,7 +7,7 @@ I'm not even saying it's a good example, it's just an example =). We cloned this
 
 Here's a screen shot of our full top level directory structure and our development `Apps` Manifest. .
 
-![alt text](assets/directory-structure.png)
+![alt text](_assets/directory-structure.png)
 
 
 ### Things we may do a little differently
@@ -16,7 +16,7 @@ Here's a screen shot of our full top level directory structure and our developme
 - We don't deploy to main to trigger releases. We create an immutable release tag (Semantic Versioning). Our pipelines are configured to commit to main once a deployment is completed and revert if a deployment fails. This way, main always represents production. 
 
 ### Our High Level Build / Deploy Process
-![alt text](assets/container-deployment.jpg)
+![alt text](_assets/container-deployment.jpg)
 
 ### Container Tagging Standards
 *This is an excert from our internal "On Containerization" standards document.*
