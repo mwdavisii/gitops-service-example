@@ -13,7 +13,7 @@ Here's a screen shot of our full top level directory structure and our developme
 ### Things we may do a little differently
 - We only build our containers before deploying to development. Every production container is compiled in Development and gets deployed to production exclusively by tags. Configurations are passed into the containers at runtime. 
   - The exception to this rule is frontends where we use debug build option in development.
-- We don't deploy to main to trigger releases. We create an immutable release tag (Semantic Versioning). Our pipelines are configured to commit to main once a deployment is completed. This way, main always represents production. 
+- We don't deploy to main to trigger releases. We create an immutable release tag (Semantic Versioning). Our pipelines are configured to commit to main once a deployment is completed and revert if a deployment fails. This way, main always represents production. 
 
 ### Our High Level Build / Deploy Process
 ![alt text](assets/container-deployment.jpg)
